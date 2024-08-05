@@ -1,12 +1,9 @@
-// pdf.js 라이브러리 설정
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdfjs/pdf.worker.js';
-
-// 드래그 앤 드롭 영역 설정
 const dropZone = document.getElementById('drop-zone');
 const pdfContainer = document.getElementById('pdf-container');
 
 dropZone.addEventListener('dragover', (event) => {
     event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy';
     dropZone.classList.add('dragover');
 });
 
@@ -14,39 +11,57 @@ dropZone.addEventListener('dragleave', () => {
     dropZone.classList.remove('dragover');
 });
 
-dropZone.addEventListener('drop', (event) => {
+dropZone.addEventListener('drop', async (event) => {
     event.preventDefault();
     dropZone.classList.remove('dragover');
+
     const files = event.dataTransfer.files;
+    // PDF 파일인지 확인
     if (files.length > 0 && files[0].type === 'application/pdf') {
         const file = files[0];
-        const reader = new FileReader();
-        reader.onload = function() {
-            const typedarray = new Uint8Array(this.result);
-            renderPDF(typedarray);
+        const fileReader = new FileReader();
+
+        fileReader.onload = async function() {
+            const typedArray = new Uint8Array(this.result);
+
+            try {
+                const pdf = await pdfjsLib.getDocument(typedArray).promise;
+                pdfContainer.innerHTML = ''; // 기존 PDF 내용을 지움
+
+                for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                    const page = await pdf.getPage(pageNum);
+                    const viewport = page.getViewport({ scale: 1.5 });
+
+                    const canvas = document.createElement('canvas');
+                    const canvasContext = canvas.getContext('2d');
+                    canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+
+                    pdfContainer.appendChild(canvas);
+
+                    const renderContext = {
+                        canvasContext: canvasContext,
+                        viewport: viewport
+                    };
+                    await page.render(renderContext).promise;
+                }
+            } catch (error) {
+                console.error('Error rendering PDF:', error);
+                alert('Error loading PDF. Check the console for details.');
+            }
         };
-        reader.readAsArrayBuffer(file);
+
+        fileReader.readAsArrayBuffer(file);
     } else {
         alert('Please drop a valid PDF file.');
     }
 });
 
-// PDF 파일 렌더링 함수
-function renderPDF(typedarray) {
-    pdfjsLib.getDocument(typedarray).promise.then((pdf) => {
-        pdfContainer.innerHTML = '';
-        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-            pdf.getPage(pageNum).then((page) => {
-                const viewport = page.getViewport({ scale: 1.5 });
-                const canvas = document.createElement('canvas');
-                const context = canvas.getContext('2d');
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
+// 브라우저 기본 PDF 드래그 앤 드롭 동작 방지
+window.addEventListener('dragover', function(e) {
+    e.preventDefault();
+}, false);
 
-                page.render({ canvasContext: context, viewport: viewport }).promise.then(() => {
-                    pdfContainer.appendChild(canvas);
-                });
-            });
-        }
-    });   
-}
+window.addEventListener('drop', function(e) {
+    e.preventDefault();
+}, false);
