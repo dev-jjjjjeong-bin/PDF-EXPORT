@@ -30,7 +30,7 @@ dropZone.addEventListener('drop', async (event) => {
 
                 for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
                     const page = await pdf.getPage(pageNum);
-                    const scale = 1.5;
+                    const scale = 2.0; // PDF 페이지를 조금 더 크게 렌더링
                     const viewport = page.getViewport({ scale: scale });
 
                     const canvas = document.createElement('canvas');
