@@ -30,7 +30,8 @@ dropZone.addEventListener('drop', async (event) => {
 
                 for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
                     const page = await pdf.getPage(pageNum);
-                    const viewport = page.getViewport({ scale: 1.5 });
+                    const scale = 1.5;
+                    const viewport = page.getViewport({ scale: scale });
 
                     const canvas = document.createElement('canvas');
                     const canvasContext = canvas.getContext('2d');
