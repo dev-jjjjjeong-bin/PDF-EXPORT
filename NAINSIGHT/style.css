@@ -5,10 +5,11 @@ body {
   display: flex;
   height: 100vh;
   overflow: hidden;
-  font-family: Arial, sans-serif;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f4f7fa;
 }
 
- /* 세로 기준으로 화면 이분할 시 왼쪽 절반 */
+/* 세로 기준으로 화면 이분할 시 왼쪽 절반 */
 #left-container {
   width: 50%;
   display: flex;
@@ -18,6 +19,48 @@ body {
   height: 100vh;
   position: relative;
   overflow: hidden;
+  border-right: 1px solid #ddd;
+  background-color: #fff;
+}
+
+/* 드래그 앤 드랍 존 스타일 */
+#drop-zone {
+  width: 90%;
+  height: 100px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px dashed #007BFF;
+  border-radius: 10px;
+  color: #007BFF;
+  font-size: 16px;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+#drop-zone.dragover {
+  background-color: #e8f0fe;
+}
+
+/* PDF 표시 컨테이너 */
+#pdf-container {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0;
+}
+
+#pdf-container canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-bottom: 10px;
 }
 
 /* 세로 기준으로 화면 이분할 시 오른쪽 절반 */
@@ -28,51 +71,118 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  border-left: 1px solid #ccc;
+  background-color: #f9fafb;
 }
 
+/* 챗봇 창 설정 */
 #chat-window {
-  width: 80%;
-  height: 80%;
+  width: 90%;
+  height: 90%;
+  display: flex;
+  flex-direction: column;
   border: 1px solid #ccc;
+  background-color: #fff;
   padding: 10px;
   overflow-y: auto;
+  border-radius: 20px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
 }
 
-/* 드래그 앤 드랍 존 설정 */
-#drop-zone {
-  width: 80%;
-  height: 150px;
-  border: 2px dashed #ccc;
-  border-radius: 10px;
+#chat-log {
+  flex-grow: 1;
+  overflow-y: auto;
+  margin-bottom: 18px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* 채팅 말풍선 스타일 */
+.user,
+.assistant {
+  max-width: 70%;
+  padding: 12px 15px;
+  margin-bottom: 10px;
+  border-radius: 20px;
+  position: relative;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.user {
+  background-color: #007BFF;
+  color: white;
+  align-self: flex-end;
+  border-top-right-radius: 0;
+}
+
+.assistant {
+  background-color: #e8eaf6;
+  color: #333;
+  align-self: flex-start;
+  border-top-left-radius: 0;
+}
+
+/* 말풍선 꼬리 */
+.user:after {
+  content: '';
+  position: absolute;
+  right: -10px;
+  top: 12px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid #007BFF;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+}
+
+.assistant:after {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 12px;
+  width: 0;
+  height: 0;
+  border-right: 10px solid #e8eaf6;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+}
+
+/* 입력창 및 버튼 설정 */
+#chat-input-container {
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin-top: 20px;
-  transition: background-color 0.3s, opacity 0.5s;
-  z-index: 10;
-  background-color: rgba(255, 255, 255, 0.8);
-  position: relative;
+  padding: 10px;
+  background-color: #f4f7fa;
+  border-radius: 10px;
 }
 
-#drop-zone.dragover {
-  background-color: rgba(224, 224, 224, 0.8);
+#chat-input {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+  font-size: 14px;
 }
 
-/* PDF 파일 열리는 위치 설정 */
-#pdf-container {
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: white;
+#send-btn {
+  padding: 10px 20px;
+  border: none;
+  background-color: #007BFF;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-left: 10px;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
 }
 
-#pdf-container canvas {
-  display: block;
-  margin: 10px auto;
-  max-width: 95%;
-  height: auto;
+#send-btn:hover {
+  background-color: #0056b3;
+}
+
+#send-btn:active {
+  background-color: #003d80;
 }
