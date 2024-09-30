@@ -124,31 +124,6 @@ body {
   border-top-left-radius: 0;
 }
 
-/* 말풍선 꼬리 */
-.user:after {
-  content: '';
-  position: absolute;
-  right: -10px;
-  top: 12px;
-  width: 0;
-  height: 0;
-  border-left: 10px solid #007BFF;
-  border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent;
-}
-
-.assistant:after {
-  content: '';
-  position: absolute;
-  left: -10px;
-  top: 12px;
-  width: 0;
-  height: 0;
-  border-right: 10px solid #e8eaf6;
-  border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent;
-}
-
 /* 입력창 및 버튼 설정 */
 #chat-input-container {
   display: flex;
